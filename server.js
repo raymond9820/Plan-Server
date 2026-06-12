@@ -1,31 +1,46 @@
-console.log("web serverni boshlash");
-//1-Bosqich: Kerakli asboblarni olib kelish (Ulanishlar)
+console.log("Start webserver");
+const { render } = require("ejs");
 const express = require("express");
-//bu orqali esa Express’ning barcha imkoniyatlaridan foydalanish uchun restoran binosini (appni) qurib olyapmiz.
 const app = express();
-//http paketlarini chiqarib oliyabmiz
 const http = require("http");
+const fs = require("fs");
 
-//1: Kirish code
-//Middleware: user so‘rovi (request) kodingiz ichiga kirib borishidan oldin, mana shu filtrlar orqali o‘tadi:
+let user;
+fs.readFile("database/userdata.json", "utf-8", (err, data) => {
+  if (err) {
+    console.log("ERROR:", err);
+  } else {
+    user = JSON.parse(data);
+  }
+});
+//1: Entry code:
+//Middleware: Before a user request enters your code, it passes through these filters:
 app.use(express.static("public"));
-//agar user xar xil datalar orqali jonatsa:express uni tushunadigan qilib chiroyli ob'ektga o‘girib beradi.
+//If the user sends in various data: express will convert it into a beautiful object that it understands.
 app.use(express.json());
-//user Login yoki Registratsiya formasidan) ma'lumot jo‘natsa, o‘sha ma'lumotlarni xatosiz o‘qib olishga yordam beradi. htmldan formlarni qabul qiladi
+// html get form:
 app.use(express.urlencoded({ extended: true }));
 
 //2:Session code
-//3:Views code dizayn: bsr
+//3:Views code dizayn: bsrss
 app.set("views", "views");
 app.set("view engine", "ejs");
 
-//4: Routing code:ya'ni yo‘l ko‘rsatuvchi
-
-app.get("/", function (req, res) {
-  res.end("hello world by Raymond");
+//4: Routing code: Roadmap:
+app.post("/create-item", (req, res) => {
+  console.log(req.body);
+  res.json({ test: "test success" });
 });
 
-//serverni quramiz:
+app.get("/", function (req, res) {
+  res.render("Buysell");
+});
+
+app.get("/author", (req, res) => {
+  res.render("author", { user: user });
+});
+
+//build Server:
 const server = http.createServer(app);
 let PORT = 3000;
 server.listen(PORT, function () {
