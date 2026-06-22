@@ -5,14 +5,8 @@ const app = express();
 const http = require("http");
 const fs = require("fs");
 
-let user;
-fs.readFile("database/userdata.json", "utf-8", (err, data) => {
-  if (err) {
-    console.log("ERROR:", err);
-  } else {
-    user = JSON.parse(data);
-  }
-});
+const userData = fs.readFileSync("database/userdata.json", "utf-8");
+const user = JSON.parse(userData);
 //1: Entry code:
 //Middleware: Before a user request enters your code, it passes through these filters:
 app.use(express.static("public"));
@@ -28,12 +22,12 @@ app.set("view engine", "ejs");
 
 //4: Routing code: Roadmap:
 app.post("/create-item", (req, res) => {
-  console.log(req.body);
-  res.json({ test: "test success" });
+  console.log("terminalga kelgan data:", req.body);
+  res.redirect("/");
 });
 
 app.get("/", function (req, res) {
-  res.render("Buysell");
+  res.render("Buysell", { user: user });
 });
 
 app.get("/author", (req, res) => {
