@@ -10,7 +10,8 @@ const list = [
   "6 Now relax, because it's useless", // 60 over
 ];
 
-/*function maslahatBering(a, Callback) {
+/* call --> 
+function maslahatBering(a, Callback) {
   if (typeof a !== "number") Callback("insert a number", null);
   else if (a <= 20) Callback(null, list[0]);
   else if (a > 20 && a <= 30) Callback(null, list[1]);
@@ -24,20 +25,20 @@ const list = [
   }
 }
 
-console.log("passed here 0:");
+ this define sector --->
+
 maslahatBering(65, (err, data) => {
   if (err) console.log("ERROR:", err);
   else {
     console.log("Javob:", data);
   }
-});
-console.log("passed here 1");*/
+});*/
 
-/* plan:
+/* plan: 
 asynchronous coding
 asynchronous funtions
 promise funtions
-callback vs asynchronous vs promise */
+callback vs asynchronous vs promise 
 //async function Define --->
 async function maslahatBering(a) {
   if (typeof a !== "number") throw new Error("insert a number", null);
@@ -53,10 +54,10 @@ async function maslahatBering(a) {
       });
     });
   }
-}
+} */
 
 // async function call via then/catch --->
-/*console.log("passed here 0:");
+/* 
 maslahatBering(60)
   .then((data) => {
     console.log("javob:", data);
@@ -65,15 +66,78 @@ maslahatBering(60)
   .catch((err) => {
     console.log("ERROR", err);
   });
-console.log("passed here 1"); */
+ 
 
 //call -> asyns/await  (maydoncha) call --->
 async function run() {
   let javob = await maslahatBering(25);
   console.log(javob);
+  
   javob = await maslahatBering(70);
   console.log(javob);
   javob = await maslahatBering(41);
   console.log(javob);
 }
-run();
+run(); */
+
+/* Asynchronous funtion > Callback | Async | Promise 
+
+ DEFINE                      CALL
+
+ callback        >          callback
+ async/await     >          then/catch || async/await 
+ promise.         >          then/catch || async/await 
+*/
+
+// Define || promise
+function advice(age) {
+  return new Promise((resolve, reject) => {
+    if (typeof age !== "number") reject("should be number");
+    else if (age > 60) resolve(list[5]);
+    else if (age > 50) resolve(list[4]);
+    else if (age > 40) resolve(list[3]);
+    else if (age > 30) resolve(list[2]);
+    else if (age > 20) resolve(list[1]);
+    else {
+      setTimeout(() => {
+        resolve(list[1]);
+      }, 3000);
+    }
+  });
+}
+
+advice(35)
+  .then((data) => {
+    console.log("Result:", data);
+  })
+  .catch((err) => {
+    console.log("ERROR:", err);
+  });
+//----------------
+const http = require("http");
+const mongodb = require("mongodb");
+
+// 2ta varibale and mongdb documation qarash kerak
+let db;
+const connectingString =
+  "mongodb+srv://Raymond:6LFNNqhbGLuGAeQ3@raymond.dnaiuga.mongodb.net/Reja";
+// bu method 3 ta parametr paste qilinadi, string, true, callback
+mongodb.connect(
+  connectingString,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  (err, client) => {
+    if (err) console.log("ERROR on connection MongoDb");
+    else {
+      console.log("MongoDB connection succeed");
+      const app = require("./app");
+      const server = http.createServer(app);
+      let PORT = 3000;
+      server.listen(PORT, function () {
+        console.log(`The server is running successfully on port: ${PORT},`);
+      });
+    }
+  },
+);

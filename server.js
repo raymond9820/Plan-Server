@@ -1,42 +1,31 @@
-console.log("Start webserver");
-const { render } = require("ejs");
-const express = require("express");
-const app = express();
 const http = require("http");
-const fs = require("fs");
+const mongodb = require("mongodb");
 
-const userData = fs.readFileSync("database/userdata.json", "utf-8");
-const user = JSON.parse(userData);
-//1: Entry code:
-//Middleware: Before a user request enters your code, it passes through these filters:
-app.use(express.static("public"));
-//If the user sends in various data: express will convert it into a beautiful object that it understands.
-app.use(express.json());
-// html get form:
-app.use(express.urlencoded({ extended: true }));
+let db;
+const connectingString =
+  "mongodb+srv://Raymond:6LFNNqhbGLuGAeQ3@raymond.dnaiuga.mongodb.net/Reja";
 
-//2:Session code
-//3:Views code dizayn: bsrss
-app.set("views", "views");
-app.set("view engine", "ejs");
+mongodb.connect(
+  connectingString,
+  {
+    userNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
 
-//4: Routing code: Roadmap:
-app.post("/create-item", (req, res) => {
-  console.log("terminalga kelgan data:", req.body);
-  res.redirect("/");
-});
+  (err, client) => {
+    if (err) console.log("ERROR on connection MongoDb");
+    else {
+      console.log("MongoDB connection succeed");
+      module.exports = client;
+      const app = require("./app");
 
-app.get("/", function (req, res) {
-  res.render("Buysell", { user: user });
-});
-
-app.get("/author", (req, res) => {
-  res.render("author", { user: user });
-});
-
-//build Server:
-const server = http.createServer(app);
-let PORT = 3000;
-server.listen(PORT, function () {
-  console.log(`THe server is running successfully on port: ${PORT}`);
-});
+      const server = http.createServer(app);
+      let PORT = 3000;
+      server.listen(PORT, function () {
+        console.log(
+          `The server is running successfully on port: ${PORT}, http://localhost:${PORT}`,
+        );
+      });
+    }
+  },
+);
