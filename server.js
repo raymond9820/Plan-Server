@@ -1,5 +1,6 @@
 const http = require("http");
 const mongodb = require("mongodb");
+//app.set("db", db);
 
 let db;
 const connectingString =
