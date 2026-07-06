@@ -20,9 +20,9 @@ function itemTemplate(item) {
         </li>`;
 }
 
-let createField = document.getElementById("createField");
+let createField = document.getElementById("create-field");
 
-document.getElementById("create-item").addEventListener("submit", function (e) {
+document.getElementById("create-form").addEventListener("submit", function (e) {
   e.preventDefault();
   axios
     .post("/create-item", { reja: createField.value })
@@ -36,4 +36,57 @@ document.getElementById("create-item").addEventListener("submit", function (e) {
     .catch((err) => {
       console.log("Please can try again !");
     });
+});
+
+//button click function
+document.addEventListener("click", function (e) {
+  //delete oper
+  if (e.target.classList.contains("delete-me")) {
+    if (confirm("aniq o'chirmoqchisiz ?")) {
+      axios
+        .post("/delete-item", { id: e.target.getAttribute("data-id") })
+        .then((response) => {
+          console.log(response.data);
+          e.target.parentElement.parentElement.remove();
+        })
+        .catch((err) => {
+          console.log("sorry ,Please can try one time");
+        });
+    }
+  }
+  //edit oper
+  if (e.target.classList.contains("edit-me")) {
+    let userInput = prompt(
+      "O'zgartirishni kiriting",
+      e.target.parentElement.parentElement.querySelector(".item-text")
+        .innerHTML,
+    );
+    if (userInput) {
+      console.log(userInput);
+      {
+        axios
+          .post("/edit-item", {
+            id: e.target.getAttribute("data-id"),
+            new_input: userInput,
+          })
+          .then((response) => {
+            console.log(response.data);
+            e.target.parentElement.parentElement.querySelector(
+              ".item-text",
+            ).innerHTML = userInput;
+          })
+          .catch((err) => {
+            console.log("sorry ,Please can try one time");
+          });
+      }
+    }
+  }
+});
+
+//new API dellete All
+document.getElementById("clean-all").addEventListener("click", function () {
+  axios.post("/delete-all", { delete_all: true }).then((response) => {
+    alert(response.data.state);
+    document.location.reload();
+  });
 });
